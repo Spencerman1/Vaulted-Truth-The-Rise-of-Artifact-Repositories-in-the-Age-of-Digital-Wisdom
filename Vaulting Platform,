@@ -1,0 +1,122 @@
+// VaultForge UX Wireframes (Draft 1)
+// Designed in React JSX pseudo-structure for clarity and visual planning
+
+export default function VaultForgeApp() {
+  return (
+    <div className="min-h-screen bg-gray-100 p-6 space-y-10">
+
+      {/* 1. Dashboard */}
+      <section className="bg-white shadow rounded-2xl p-6">
+        <h1 className="text-2xl font-bold mb-4">VaultForge Dashboard</h1>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <Card title="New Vault Entry" icon="plus-square" />
+          <Card title="Artifact Scanner" icon="scan-search" />
+          <Card title="Shadow Units" icon="shield-alert" />
+          <Card title="Affidavit Generator" icon="file-text" />
+        </div>
+      </section>
+
+      {/* 2. Vault Entry Form */}
+      <section className="bg-white shadow rounded-2xl p-6">
+        <h2 className="text-xl font-semibold mb-4">New Artifact Vaulting</h2>
+        <form className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Input label="Artifact Name" />
+          <Input label="Substrate / Material Used" />
+          <Input label="Voltage Used" />
+          <Input label="Plating Time (mins)" />
+          <Textarea label="Growth/Plating Notes" />
+          <FileUpload label="Upload Photo/Video" />
+          <Input label="Timestamp (auto-generated)" disabled />
+          <Button className="col-span-2">Generate Vault Record</Button>
+        </form>
+      </section>
+
+      {/* 3. Artifact Viewer */}
+      <section className="bg-white shadow rounded-2xl p-6">
+        <h2 className="text-xl font-semibold mb-4">Vaulted Artifact Preview</h2>
+        <ArtifactCard 
+          name="Copper-Plated Crystal"
+          substrate="Quartz"
+          voltage="6.5V"
+          time="180 min"
+          shadowUnits="2"
+          qrCodeSrc="/qrcode123.png"
+        />
+      </section>
+
+      {/* 4. Licensing + Enforcement */}
+      <section className="bg-white shadow rounded-2xl p-6">
+        <h2 className="text-xl font-semibold mb-4">Licensing + Containment Enforcement</h2>
+        <div className="space-y-4">
+          <p>Select actions below to issue licenses or document infringement.</p>
+          <div className="flex gap-4">
+            <Button>Issue Commercial License</Button>
+            <Button variant="destructive">File Infringement Notice</Button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  );
+}
+
+// Reusable Components
+function Card({ title, icon }) {
+  return (
+    <div className="p-4 bg-indigo-100 rounded-xl flex items-center gap-3">
+      <i className={`lucide-${icon} text-xl`} />
+      <span>{title}</span>
+    </div>
+  );
+}
+
+function Input({ label, ...props }) {
+  return (
+    <label className="block">
+      <span className="text-sm font-medium">{label}</span>
+      <input {...props} className="mt-1 w-full rounded border p-2" />
+    </label>
+  );
+}
+
+function Textarea({ label }) {
+  return (
+    <label className="block col-span-2">
+      <span className="text-sm font-medium">{label}</span>
+      <textarea className="mt-1 w-full rounded border p-2 h-24" />
+    </label>
+  );
+}
+
+function FileUpload({ label }) {
+  return (
+    <label className="block col-span-2">
+      <span className="text-sm font-medium">{label}</span>
+      <input type="file" className="mt-1 w-full" />
+    </label>
+  );
+}
+
+function Button({ children, variant = 'default', ...props }) {
+  const base = "px-4 py-2 rounded font-semibold";
+  const styles = {
+    default: "bg-indigo-600 text-white hover:bg-indigo-700",
+    destructive: "bg-red-600 text-white hover:bg-red-700"
+  };
+  return <button className={`${base} ${styles[variant]}`} {...props}>{children}</button>;
+}
+
+function ArtifactCard({ name, substrate, voltage, time, shadowUnits, qrCodeSrc }) {
+  return (
+    <div className="p-4 bg-gray-50 border rounded-xl flex gap-6 items-center">
+      <img src={qrCodeSrc} alt="QR Code" className="w-20 h-20" />
+      <div>
+        <h3 className="text-lg font-bold">{name}</h3>
+        <p>Substrate: {substrate}</p>
+        <p>Voltage: {voltage}</p>
+        <p>Plating Time: {time}</p>
+        <p>Shadow Units: {shadowUnits}</p>
+      </div>
+    </div>
+  );
+}
