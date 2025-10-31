@@ -1,0 +1,63 @@
+import React, { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Upload, FileText } from "lucide-react";
+
+export default function VaultArtifact() {
+  const [file, setFile] = useState(null);
+  const [hash, setHash] = useState("");
+  const [timestamp, setTimestamp] = useState("");
+
+  const handleFileChange = async (event) => {
+    const selectedFile = event.target.files[0];
+    setFile(selectedFile);
+
+    const arrayBuffer = await selectedFile.arrayBuffer();
+    const hashBuffer = await crypto.subtle.digest("SHA-256", arrayBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hexHash = hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+    setHash(hexHash);
+    setTimestamp(new Date().toISOString());
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Here you would add the logic to save the artifact, hash, and timestamp to your backend or blockchain
+    alert("Vaulted successfully!");
+  };
+
+  return (
+    <Card className="max-w-xl mx-auto p-4 shadow-lg">
+      <CardContent>
+        <h2 className="text-2xl font-bold mb-4">🔐 Vault Artifact</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <Label htmlFor="artifactName">Artifact Name</Label>
+            <Input id="artifactName" required placeholder="e.g. ElectroVault Protocol" />
+          </div>
+          <div>
+            <Label htmlFor="description">Description</Label>
+            <Textarea id="description" required placeholder="Describe this artifact, process, or creative work..." />
+          </div>
+          <div>
+            <Label htmlFor="fileUpload">Upload Artifact</Label>
+            <Input id="fileUpload" type="file" required onChange={handleFileChange} />
+          </div>
+
+          {file && (
+            <div className="text-sm text-gray-700">
+              <p><FileText className="inline w-4 h-4 mr-1" /> <strong>Filename:</strong> {file.name}</p>
+              <p><strong>SHA-256:</strong> <code className="break-all text-xs">{hash}</code></p>
+              <p><strong>Timestamp:</strong> {timestamp}</p>
+            </div>
+          )}
+
+          <Button type="submit" className="w-full">Vault & Timestamp</Button>
+        </form>
+      </CardContent>
+    </Card>
+  );
+}
